@@ -88,7 +88,7 @@ const getFullLinks = async(page) => {
 const crawl = async (user) => {
     const DIR_PATH = __dirname.concat('/', user.replace(/\./g, ""))
     if (fs.existsSync(DIR_PATH)) return
-    const browser = await puppeteer.launch({headless: false})
+    const browser = await puppeteer.launch({headless: true})
     const page = await browser.newPage()
     await page.goto(INSTAGRAM_URL + user)
     const fullLinks = await getFullLinks(page)
@@ -113,7 +113,10 @@ const crawl = async (user) => {
 const main = async() => {
     const data = await loadData()
     console.log(data)
-    if(data.length > 0) Promise.all(data.map(user => crawl(user)))
+    if(data.length > 0) {
+        await Promise.all(data.map(user => crawl(user)))
+        console.log("DONE-ENJOY")
+    }
     else console.log('Input file empty or wrong input format, please enter each user on one line into input.txt file')
 }
 
