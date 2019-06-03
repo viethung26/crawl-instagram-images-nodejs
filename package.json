@@ -1,0 +1,11 @@
+{
+  "name": "TestPuppet",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "image-downloader": "^3.4.2",
+    "puppeteer": "^1.17.0",
+    "puppeteer-core": "^1.17.0"
+  }
+}
