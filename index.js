@@ -87,7 +87,9 @@ const getFullLinks = async(page) => {
 }
 
 const crawl = async (user) => {
-    const DIR_PATH = __dirname.concat('/Output/', user.replace(/\./g, ""))
+    const OUTPUT_PATH = __dirname.concat('/Output')
+    !fs.existsSync(OUTPUT_PATH) && fs.mkdirSync(OUTPUT_PATH)
+    const DIR_PATH = OUTPUT_PATH.concat('/',user.replace(/\./g, ""))
     if (fs.existsSync(DIR_PATH)) return
     const browser = await puppeteer.launch({headless: true})
     const page = await browser.newPage()
