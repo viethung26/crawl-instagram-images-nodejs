@@ -99,7 +99,6 @@ const crawl = async (user) => {
         await fs.mkdir(DIR_PATH,(err) => {
             if (err) console.log("Making directory error: ", err)
         })
-        const dataOutput = "Quantity: ".concat(fullLinks.length, "\n", JSON.stringify(fullLinks).replace(/,/g, '\n'))
         await Promise.all(fullLinks.map(link => {
             download.image({
                 url: link,
@@ -114,6 +113,7 @@ const main = async() => {
     let data = await loadData()
     console.log(data)
     if(data.length > 0) {
+        console.log("Please waiting a minute...")
         while(data.length > 0) {
             const subData = data.slice(0, MAX_LIMIT)
             data = data.slice(MAX_LIMIT)
