@@ -4,6 +4,7 @@ const download = require('image-downloader')
 
 const INPUT_PATH = __dirname.concat('/', "input.txt") 
 const INSTAGRAM_URL = 'https://www.instagram.com/'
+const MAX_LIMIT = 5
 
 const loadData = async() => {
     if(fs.existsSync(INPUT_PATH)) {
@@ -86,7 +87,7 @@ const getFullLinks = async(page) => {
 }
 
 const crawl = async (user) => {
-    const DIR_PATH = __dirname.concat('/', user.replace(/\./g, ""))
+    const DIR_PATH = __dirname.concat('/Output/', user.replace(/\./g, ""))
     if (fs.existsSync(DIR_PATH)) return
     const browser = await puppeteer.launch({headless: true})
     const page = await browser.newPage()
@@ -97,9 +98,6 @@ const crawl = async (user) => {
             if (err) console.log("Making directory error: ", err)
         })
         const dataOutput = "Quantity: ".concat(fullLinks.length, "\n", JSON.stringify(fullLinks).replace(/,/g, '\n'))
-        await fs.writeFile(DIR_PATH.concat('/link.txt'), dataOutput, (err) => {
-            if (err) console.log("writing error", err)
-        })
         await Promise.all(fullLinks.map(link => {
             download.image({
                 url: link,
@@ -111,13 +109,16 @@ const crawl = async (user) => {
 }
 
 const main = async() => {
-    const data = await loadData()
+    let data = await loadData()
     console.log(data)
     if(data.length > 0) {
-        await Promise.all(data.map(user => crawl(user)))
+        while(data.length > 0) {
+            const subData = data.slice(0, MAX_LIMIT)
+            data = data.slice(MAX_LIMIT)
+            await Promise.all(subData.map(user => crawl(user)))
+        }
         console.log("DONE-ENJOY")
     }
     else console.log('Input file empty or wrong input format, please enter each user on one line into input.txt file')
 }
-
 main()
